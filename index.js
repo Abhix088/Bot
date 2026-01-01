@@ -4,9 +4,9 @@ const { GoalBlock } = goals
 
 function startBot() {
   const bot = mineflayer.createBot({
-    host: 'YOUR_SERVER_IP', // e.g. play.example.com
-    port: 25565,
-    username: 'SMP_Bot',
+    host: 'FiredSMP24.aternos.me', // e.g. play.example.com
+    port: '32082',
+    username: 'Michael',
     version: false
   })
 
@@ -19,7 +19,7 @@ function startBot() {
 
     // Chat every 5 minutes
     setInterval(() => {
-      bot.chat('Welcome to my SMP ❤️')
+      bot.chat('.......')
     }, 5 * 60 * 1000)
   })
 
