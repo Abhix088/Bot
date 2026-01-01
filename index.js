@@ -2,26 +2,38 @@ const mineflayer = require('mineflayer')
 const { pathfinder, Movements, goals } = require('mineflayer-pathfinder')
 const { GoalBlock } = goals
 
-const bot = mineflayer.createBot({
-  host: 'YOUR_SERVER_IP',
-  port: 25565,
-  username: 'SMP_Bot',
-  version: false
-})
+function startBot() {
+  const bot = mineflayer.createBot({
+    host: 'YOUR_SERVER_IP', // e.g. play.example.com
+    port: 25565,
+    username: 'SMP_Bot',
+    version: false
+  })
 
-bot.loadPlugin(pathfinder)
+  bot.loadPlugin(pathfinder)
 
-bot.once('spawn', () => {
-  console.log('Bot joined server')
+  bot.once('spawn', () => {
+    console.log('Bot joined the server')
 
-  moveIn4x4Square()
+    moveIn4x4Square(bot)
 
-  setInterval(() => {
-    bot.chat('Welcome to my SMP ❤️')
-  }, 5 * 60 * 1000)
-})
+    // Chat every 5 minutes
+    setInterval(() => {
+      bot.chat('Welcome to my SMP ❤️')
+    }, 5 * 60 * 1000)
+  })
 
-function moveIn4x4Square() {
+  bot.on('end', () => {
+    console.log('Bot disconnected. Reconnecting in 10 seconds...')
+    setTimeout(startBot, 10000)
+  })
+
+  bot.on('error', err => {
+    console.log('Bot error:', err)
+  })
+}
+
+function moveIn4x4Square(bot) {
   const mcData = require('minecraft-data')(bot.version)
   const movements = new Movements(bot, mcData)
   bot.pathfinder.setMovements(movements)
@@ -50,10 +62,4 @@ function moveIn4x4Square() {
   }, 5000)
 }
 
-// Auto reconnect
-bot.on('end', () => {
-  console.log('Disconnected, reconnecting...')
-  setTimeout(() => process.exit(1), 5000)
-})
-
-bot.on('error', console.log)
+startBot()
